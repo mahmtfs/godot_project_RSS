@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=2]
+[gd_scene load_steps=100 format=2]
 
 [ext_resource path="res://models/player_model/player/player_Cube004.mesh" type="ArrayMesh" id=1]
 [ext_resource path="res://models/player_model/player/Sneaking.anim" type="Animation" id=2]
@@ -6,11 +6,18 @@
 [ext_resource path="res://models/player_model/player/Base.anim" type="Animation" id=4]
 [ext_resource path="res://models/player_model/player/Idle.anim" type="Animation" id=5]
 [ext_resource path="res://scripts/player/player_control.gd" type="Script" id=6]
-[ext_resource path="res://models/player_model/player/additional_animations/Sneaking_Back.anim" type="Animation" id=7]
-[ext_resource path="res://models/player_model/player/additional_animations/Walking_Back.anim" type="Animation" id=8]
-[ext_resource path="res://models/player_model/player/additional_animations/Jump_Hop.anim" type="Animation" id=9]
-[ext_resource path="res://models/player_model/player/additional_animations/Mid_Air.anim" type="Animation" id=10]
-[ext_resource path="res://models/player_model/player/additional_animations/Landing.anim" type="Animation" id=11]
+[ext_resource path="res://models/player_model/player/Sneaking_Back.anim" type="Animation" id=7]
+[ext_resource path="res://models/player_model/player/Walking_Back.anim" type="Animation" id=8]
+[ext_resource path="res://models/player_model/player/Jump_Hop.anim" type="Animation" id=9]
+[ext_resource path="res://models/player_model/player/Mid_Air.anim" type="Animation" id=10]
+[ext_resource path="res://models/player_model/player/Landing.anim" type="Animation" id=11]
+[ext_resource path="res://scripts/player/weapon_manager.gd" type="Script" id=12]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Pull_Slide.anim" type="Animation" id=13]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Swap_Mag.anim" type="Animation" id=14]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Base.anim" type="Animation" id=15]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Draw.anim" type="Animation" id=16]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Hold.anim" type="Animation" id=17]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Fire.anim" type="Animation" id=18]
 
 [sub_resource type="Skin" id=1]
 resource_name = "Skin"
@@ -115,115 +122,215 @@ bind/32/name = "foot_ik_r"
 bind/32/bone = -1
 bind/32/pose = Transform( -0.98259, 0.185788, 0, 0, 0, 1, 0.185788, 0.98259, 0, 0.198331, -0.1064, -0.108953 )
 
+[sub_resource type="CubeMesh" id=127]
+
 [sub_resource type="CapsuleShape" id=2]
-radius = 0.6
-height = 1.49
+height = 0.68
+
+[sub_resource type="AnimationNodeBlend2" id=109]
+filter_enabled = true
+filters = [ "PlayerSkeleton/Skeleton:big_l", "PlayerSkeleton/Skeleton:big_r", "PlayerSkeleton/Skeleton:elbow_l", "PlayerSkeleton/Skeleton:elbow_r", "PlayerSkeleton/Skeleton:hand_ik_l", "PlayerSkeleton/Skeleton:hand_ik_r", "PlayerSkeleton/Skeleton:hand_l", "PlayerSkeleton/Skeleton:hand_l_1", "PlayerSkeleton/Skeleton:hand_r", "PlayerSkeleton/Skeleton:hand_r_1", "PlayerSkeleton/Skeleton:lower_arm_l", "PlayerSkeleton/Skeleton:lower_arm_r", "PlayerSkeleton/Skeleton:upper_arm_l", "PlayerSkeleton/Skeleton:upper_arm_r" ]
 
 [sub_resource type="AnimationNodeAnimation" id=87]
 animation = "Jump_Hop"
 
+[sub_resource type="AnimationNodeTimeScale" id=110]
+
 [sub_resource type="AnimationNodeTimeScale" id=88]
 
+[sub_resource type="AnimationNodeAnimation" id=111]
+animation = "Pistol_Hold"
+
 [sub_resource type="AnimationNodeBlendTree" id=86]
+nodes/Blend2/node = SubResource( 109 )
+nodes/Blend2/position = Vector2( 453.333, 106.667 )
 nodes/Jump_Hop/node = SubResource( 87 )
 nodes/Jump_Hop/position = Vector2( 53.3333, 80 )
 nodes/TimeScale/node = SubResource( 88 )
-nodes/TimeScale/position = Vector2( 266.667, 80 )
-nodes/output/position = Vector2( 453.333, 80 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Jump_Hop" ]
+nodes/TimeScale/position = Vector2( 640, 106.667 )
+"nodes/TimeScale 2/node" = SubResource( 110 )
+"nodes/TimeScale 2/position" = Vector2( 240, 213.333 )
+nodes/Weapon/node = SubResource( 111 )
+nodes/Weapon/position = Vector2( 53.3333, 240 )
+nodes/output/position = Vector2( 826.667, 106.667 )
+node_connections = [ "output", 0, "TimeScale", "TimeScale 2", 0, "Weapon", "TimeScale", 0, "Blend2", "Blend2", 0, "Jump_Hop", "Blend2", 1, "TimeScale 2" ]
+
+[sub_resource type="AnimationNodeBlend2" id=107]
+filter_enabled = true
+filters = [ "PlayerSkeleton/Skeleton:big_l", "PlayerSkeleton/Skeleton:big_r", "PlayerSkeleton/Skeleton:elbow_l", "PlayerSkeleton/Skeleton:elbow_r", "PlayerSkeleton/Skeleton:hand_ik_l", "PlayerSkeleton/Skeleton:hand_ik_r", "PlayerSkeleton/Skeleton:hand_l", "PlayerSkeleton/Skeleton:hand_l_1", "PlayerSkeleton/Skeleton:hand_r", "PlayerSkeleton/Skeleton:hand_r_1", "PlayerSkeleton/Skeleton:lower_arm_l", "PlayerSkeleton/Skeleton:lower_arm_r", "PlayerSkeleton/Skeleton:upper_arm_l", "PlayerSkeleton/Skeleton:upper_arm_r" ]
 
 [sub_resource type="AnimationNodeAnimation" id=31]
 animation = "Idle"
 
 [sub_resource type="AnimationNodeTimeScale" id=32]
 
+[sub_resource type="AnimationNodeAnimation" id=108]
+animation = "Pistol_Hold"
+
 [sub_resource type="AnimationNodeBlendTree" id=33]
+graph_offset = Vector2( -90.6667, 62 )
+nodes/Blend2/node = SubResource( 107 )
+nodes/Blend2/position = Vector2( 213.333, 53.3333 )
 nodes/Idle/node = SubResource( 31 )
-nodes/Idle/position = Vector2( 80, 53.3333 )
+nodes/Idle/position = Vector2( 26.6667, 26.6667 )
 nodes/TimeScale/node = SubResource( 32 )
-nodes/TimeScale/position = Vector2( 293.333, 53.3333 )
+nodes/TimeScale/position = Vector2( 400, 53.3333 )
+nodes/Weapon/node = SubResource( 108 )
+nodes/Weapon/position = Vector2( 26.6667, 160 )
 nodes/output/position = Vector2( 560, 80 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Idle" ]
+node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Idle", "Blend2", 1, "Weapon" ]
+
+[sub_resource type="AnimationNodeBlend2" id=112]
+filter_enabled = true
+filters = [ "PlayerSkeleton/Skeleton:big_l", "PlayerSkeleton/Skeleton:big_r", "PlayerSkeleton/Skeleton:elbow_l", "PlayerSkeleton/Skeleton:elbow_r", "PlayerSkeleton/Skeleton:hand_ik_l", "PlayerSkeleton/Skeleton:hand_ik_r", "PlayerSkeleton/Skeleton:hand_l", "PlayerSkeleton/Skeleton:hand_l_1", "PlayerSkeleton/Skeleton:hand_r", "PlayerSkeleton/Skeleton:hand_r_1", "PlayerSkeleton/Skeleton:lower_arm_l", "PlayerSkeleton/Skeleton:lower_arm_r", "PlayerSkeleton/Skeleton:upper_arm_l", "PlayerSkeleton/Skeleton:upper_arm_r" ]
 
 [sub_resource type="AnimationNodeAnimation" id=92]
 animation = "Landing"
 
+[sub_resource type="AnimationNodeTimeScale" id=113]
+
 [sub_resource type="AnimationNodeTimeScale" id=93]
 
+[sub_resource type="AnimationNodeAnimation" id=114]
+animation = "Pistol_Hold"
+
 [sub_resource type="AnimationNodeBlendTree" id=94]
-graph_offset = Vector2( -26.6667, -26.6667 )
+graph_offset = Vector2( -26.6667, 106.667 )
+nodes/Blend2/node = SubResource( 112 )
+nodes/Blend2/position = Vector2( 373.333, 80 )
 nodes/Landing/node = SubResource( 92 )
 nodes/Landing/position = Vector2( 53.3333, 53.3333 )
 nodes/TimeScale/node = SubResource( 93 )
-nodes/TimeScale/position = Vector2( 240, 53.3333 )
-nodes/output/position = Vector2( 426.667, 80 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Landing" ]
+nodes/TimeScale/position = Vector2( 586.667, 106.667 )
+"nodes/TimeScale 2/node" = SubResource( 113 )
+"nodes/TimeScale 2/position" = Vector2( 186.667, 186.667 )
+nodes/Weapon/node = SubResource( 114 )
+nodes/Weapon/position = Vector2( -26.6667, 213.333 )
+nodes/output/position = Vector2( 746.667, 80 )
+node_connections = [ "output", 0, "TimeScale", "TimeScale 2", 0, "Weapon", "TimeScale", 0, "Blend2", "Blend2", 0, "Landing", "Blend2", 1, "TimeScale 2" ]
+
+[sub_resource type="AnimationNodeBlend2" id=115]
+filter_enabled = true
+filters = [ "PlayerSkeleton/Skeleton:big_l", "PlayerSkeleton/Skeleton:big_r", "PlayerSkeleton/Skeleton:elbow_l", "PlayerSkeleton/Skeleton:elbow_r", "PlayerSkeleton/Skeleton:hand_ik_l", "PlayerSkeleton/Skeleton:hand_ik_r", "PlayerSkeleton/Skeleton:hand_l", "PlayerSkeleton/Skeleton:hand_l_1", "PlayerSkeleton/Skeleton:hand_r", "PlayerSkeleton/Skeleton:hand_r_1", "PlayerSkeleton/Skeleton:lower_arm_l", "PlayerSkeleton/Skeleton:lower_arm_r", "PlayerSkeleton/Skeleton:upper_arm_l", "PlayerSkeleton/Skeleton:upper_arm_r" ]
 
 [sub_resource type="AnimationNodeAnimation" id=89]
 animation = "Mid_Air"
 
 [sub_resource type="AnimationNodeTimeScale" id=90]
 
+[sub_resource type="AnimationNodeAnimation" id=116]
+animation = "Pistol_Hold"
+
 [sub_resource type="AnimationNodeBlendTree" id=91]
+nodes/Blend2/node = SubResource( 115 )
+nodes/Blend2/position = Vector2( 266.667, 80 )
 nodes/Mid_Air/node = SubResource( 89 )
 nodes/Mid_Air/position = Vector2( 53.3333, 53.3333 )
 nodes/TimeScale/node = SubResource( 90 )
-nodes/TimeScale/position = Vector2( 240, 53.3333 )
-nodes/output/position = Vector2( 453.333, 80 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Mid_Air" ]
+nodes/TimeScale/position = Vector2( 480, 53.3333 )
+nodes/Weapon/node = SubResource( 116 )
+nodes/Weapon/position = Vector2( 53.3333, 213.333 )
+nodes/output/position = Vector2( 666.667, 80 )
+node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Mid_Air", "Blend2", 1, "Weapon" ]
+
+[sub_resource type="AnimationNodeBlend2" id=117]
+filter_enabled = true
+filters = [ "PlayerSkeleton/Skeleton:big_l", "PlayerSkeleton/Skeleton:big_r", "PlayerSkeleton/Skeleton:elbow_l", "PlayerSkeleton/Skeleton:elbow_r", "PlayerSkeleton/Skeleton:hand_ik_l", "PlayerSkeleton/Skeleton:hand_ik_r", "PlayerSkeleton/Skeleton:hand_l", "PlayerSkeleton/Skeleton:hand_l_1", "PlayerSkeleton/Skeleton:hand_r", "PlayerSkeleton/Skeleton:hand_r_1", "PlayerSkeleton/Skeleton:lower_arm_l", "PlayerSkeleton/Skeleton:lower_arm_r", "PlayerSkeleton/Skeleton:upper_arm_l", "PlayerSkeleton/Skeleton:upper_arm_r" ]
 
 [sub_resource type="AnimationNodeAnimation" id=54]
 animation = "Sneaking"
 
 [sub_resource type="AnimationNodeTimeScale" id=55]
 
+[sub_resource type="AnimationNodeAnimation" id=118]
+animation = "Pistol_Hold"
+
 [sub_resource type="AnimationNodeBlendTree" id=44]
+graph_offset = Vector2( 0, 133.333 )
+nodes/Blend2/node = SubResource( 117 )
+nodes/Blend2/position = Vector2( 320, 133.333 )
 nodes/Sneaking/node = SubResource( 54 )
 nodes/Sneaking/position = Vector2( 80, 80 )
 nodes/TimeScale/node = SubResource( 55 )
-nodes/TimeScale/position = Vector2( 266.667, 53.3333 )
-nodes/output/position = Vector2( 453.333, 80 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Sneaking" ]
+nodes/TimeScale/position = Vector2( 586.667, 53.3333 )
+nodes/Weapon/node = SubResource( 118 )
+nodes/Weapon/position = Vector2( 80, 240 )
+nodes/output/position = Vector2( 773.333, 80 )
+node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Sneaking", "Blend2", 1, "Weapon" ]
+
+[sub_resource type="AnimationNodeBlend2" id=119]
+filter_enabled = true
+filters = [ "PlayerSkeleton/Skeleton:big_l", "PlayerSkeleton/Skeleton:big_r", "PlayerSkeleton/Skeleton:elbow_l", "PlayerSkeleton/Skeleton:elbow_r", "PlayerSkeleton/Skeleton:hand_ik_l", "PlayerSkeleton/Skeleton:hand_ik_r", "PlayerSkeleton/Skeleton:hand_l", "PlayerSkeleton/Skeleton:hand_l_1", "PlayerSkeleton/Skeleton:hand_r", "PlayerSkeleton/Skeleton:hand_r_1", "PlayerSkeleton/Skeleton:lower_arm_l", "PlayerSkeleton/Skeleton:lower_arm_r", "PlayerSkeleton/Skeleton:upper_arm_l", "PlayerSkeleton/Skeleton:upper_arm_r" ]
 
 [sub_resource type="AnimationNodeAnimation" id=75]
 animation = "Sneaking_Back"
 
 [sub_resource type="AnimationNodeTimeScale" id=76]
 
+[sub_resource type="AnimationNodeAnimation" id=120]
+animation = "Pistol_Hold"
+
 [sub_resource type="AnimationNodeBlendTree" id=77]
+nodes/Blend2/node = SubResource( 119 )
+nodes/Blend2/position = Vector2( 346.667, 106.667 )
 nodes/Sneaking_Back/node = SubResource( 75 )
 nodes/Sneaking_Back/position = Vector2( 80, 80 )
 nodes/TimeScale/node = SubResource( 76 )
-nodes/TimeScale/position = Vector2( 320, 80 )
-nodes/output/position = Vector2( 533.333, 106.667 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Sneaking_Back" ]
+nodes/TimeScale/position = Vector2( 560, 80 )
+nodes/Weapon/node = SubResource( 120 )
+nodes/Weapon/position = Vector2( 106.667, 213.333 )
+nodes/output/position = Vector2( 720, 106.667 )
+node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Sneaking_Back", "Blend2", 1, "Weapon" ]
+
+[sub_resource type="AnimationNodeBlend2" id=121]
+filter_enabled = true
+filters = [ "PlayerSkeleton/Skeleton:big_l", "PlayerSkeleton/Skeleton:big_r", "PlayerSkeleton/Skeleton:elbow_l", "PlayerSkeleton/Skeleton:elbow_r", "PlayerSkeleton/Skeleton:hand_ik_l", "PlayerSkeleton/Skeleton:hand_ik_r", "PlayerSkeleton/Skeleton:hand_l", "PlayerSkeleton/Skeleton:hand_l_1", "PlayerSkeleton/Skeleton:hand_r", "PlayerSkeleton/Skeleton:hand_r_1", "PlayerSkeleton/Skeleton:lower_arm_l", "PlayerSkeleton/Skeleton:lower_arm_r", "PlayerSkeleton/Skeleton:upper_arm_l", "PlayerSkeleton/Skeleton:upper_arm_r" ]
 
 [sub_resource type="AnimationNodeTimeScale" id=45]
 
 [sub_resource type="AnimationNodeAnimation" id=42]
 animation = "Walking"
 
+[sub_resource type="AnimationNodeAnimation" id=122]
+animation = "Pistol_Hold"
+
 [sub_resource type="AnimationNodeBlendTree" id=43]
 graph_offset = Vector2( -105.6, 9.33332 )
+nodes/Blend2/node = SubResource( 121 )
+nodes/Blend2/position = Vector2( 160, 106.667 )
 nodes/TimeScale/node = SubResource( 45 )
-nodes/TimeScale/position = Vector2( 266.667, 80 )
+nodes/TimeScale/position = Vector2( 346.667, 106.667 )
 nodes/Walking/node = SubResource( 42 )
-nodes/Walking/position = Vector2( 80, 80 )
-nodes/output/position = Vector2( 480, 106.667 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Walking" ]
+nodes/Walking/position = Vector2( -26.6667, 106.667 )
+nodes/Weapon/node = SubResource( 122 )
+nodes/Weapon/position = Vector2( -26.6667, 240 )
+nodes/output/position = Vector2( 533.333, 133.333 )
+node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Walking", "Blend2", 1, "Weapon" ]
+
+[sub_resource type="AnimationNodeBlend2" id=123]
+filter_enabled = true
+filters = [ "PlayerSkeleton/Skeleton:big_l", "PlayerSkeleton/Skeleton:big_r", "PlayerSkeleton/Skeleton:elbow_l", "PlayerSkeleton/Skeleton:elbow_r", "PlayerSkeleton/Skeleton:hand_ik_l", "PlayerSkeleton/Skeleton:hand_ik_r", "PlayerSkeleton/Skeleton:hand_l", "PlayerSkeleton/Skeleton:hand_l_1", "PlayerSkeleton/Skeleton:hand_r", "PlayerSkeleton/Skeleton:hand_r_1", "PlayerSkeleton/Skeleton:lower_arm_l", "PlayerSkeleton/Skeleton:lower_arm_r", "PlayerSkeleton/Skeleton:upper_arm_l", "PlayerSkeleton/Skeleton:upper_arm_r" ]
 
 [sub_resource type="AnimationNodeTimeScale" id=64]
 
 [sub_resource type="AnimationNodeAnimation" id=65]
 animation = "Walking_Back"
 
+[sub_resource type="AnimationNodeAnimation" id=124]
+animation = "Pistol_Hold"
+
 [sub_resource type="AnimationNodeBlendTree" id=66]
 graph_offset = Vector2( -222.399, 72.3333 )
+nodes/Blend2/node = SubResource( 123 )
+nodes/Blend2/position = Vector2( 133.333, 186.667 )
 nodes/TimeScale/node = SubResource( 64 )
-nodes/TimeScale/position = Vector2( 106.667, 133.333 )
+nodes/TimeScale/position = Vector2( 400, 133.333 )
 nodes/Walking_Back/node = SubResource( 65 )
 nodes/Walking_Back/position = Vector2( -133.333, 133.333 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Walking_Back" ]
+nodes/Weapon/node = SubResource( 124 )
+nodes/Weapon/position = Vector2( -133.333, 293.333 )
+nodes/output/position = Vector2( 613.333, 160 )
+node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Walking_Back", "Blend2", 1, "Weapon" ]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=46]
 xfade_time = 0.3
@@ -301,31 +408,37 @@ xfade_time = 0.3
 xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=100]
+switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=101]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=102]
+switch_mode = 2
 xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=103]
+switch_mode = 2
 xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=104]
+switch_mode = 2
 xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=105]
+switch_mode = 2
 xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=106]
+switch_mode = 2
 xfade_time = 0.3
 
 [sub_resource type="AnimationNodeStateMachine" id=12]
 states/Hop/node = SubResource( 86 )
-states/Hop/position = Vector2( 883.531, 12.8953 )
+states/Hop/position = Vector2( 882.02, 12.8953 )
 states/Idle/node = SubResource( 33 )
-states/Idle/position = Vector2( 264, -5.01993 )
+states/Idle/position = Vector2( 268, -3.6866 )
 states/Landing/node = SubResource( 94 )
-states/Landing/position = Vector2( 886.598, 284.742 )
+states/Landing/position = Vector2( 882.064, 284.742 )
 states/Mid_Air/node = SubResource( 91 )
 states/Mid_Air/position = Vector2( 882.807, 145.784 )
 states/Sneaking/node = SubResource( 44 )
@@ -335,12 +448,14 @@ states/Sneaking_Back/position = Vector2( 378, 356.896 )
 states/Walking/node = SubResource( 43 )
 states/Walking/position = Vector2( 595.333, -14.4982 )
 states/Walking_Back/node = SubResource( 66 )
-states/Walking_Back/position = Vector2( 616.667, 224.895 )
+states/Walking_Back/position = Vector2( 618, 226.228 )
 transitions = [ "Idle", "Walking", SubResource( 46 ), "Walking", "Idle", SubResource( 47 ), "Sneaking", "Idle", SubResource( 56 ), "Idle", "Sneaking", SubResource( 57 ), "Sneaking", "Walking", SubResource( 60 ), "Walking", "Sneaking", SubResource( 61 ), "Idle", "Walking_Back", SubResource( 67 ), "Walking_Back", "Idle", SubResource( 68 ), "Walking", "Walking_Back", SubResource( 69 ), "Walking_Back", "Walking", SubResource( 70 ), "Walking_Back", "Sneaking", SubResource( 73 ), "Sneaking", "Walking_Back", SubResource( 74 ), "Idle", "Sneaking_Back", SubResource( 78 ), "Sneaking_Back", "Idle", SubResource( 79 ), "Sneaking_Back", "Walking", SubResource( 80 ), "Walking", "Sneaking_Back", SubResource( 81 ), "Sneaking_Back", "Walking_Back", SubResource( 82 ), "Walking_Back", "Sneaking_Back", SubResource( 83 ), "Sneaking_Back", "Sneaking", SubResource( 84 ), "Sneaking", "Sneaking_Back", SubResource( 85 ), "Idle", "Hop", SubResource( 95 ), "Walking", "Hop", SubResource( 96 ), "Walking_Back", "Hop", SubResource( 97 ), "Sneaking", "Hop", SubResource( 98 ), "Sneaking_Back", "Hop", SubResource( 99 ), "Hop", "Mid_Air", SubResource( 100 ), "Mid_Air", "Landing", SubResource( 101 ), "Landing", "Walking_Back", SubResource( 102 ), "Landing", "Walking", SubResource( 103 ), "Landing", "Sneaking_Back", SubResource( 104 ), "Landing", "Sneaking", SubResource( 105 ), "Landing", "Idle", SubResource( 106 ) ]
 start_node = "Idle"
-graph_offset = Vector2( -64.4797, -57.6338 )
+graph_offset = Vector2( -27.0783, 115.068 )
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=13]
+
+[sub_resource type="CubeMesh" id=126]
 
 [sub_resource type="CubeMesh" id=14]
 
@@ -350,6 +465,7 @@ player_skeleton = NodePath("PlayerSkeleton")
 skeleton = NodePath("PlayerSkeleton/Skeleton")
 body_target = NodePath("BodyTarget")
 animation_tree = NodePath("AnimationTree")
+chest_pivot = NodePath("PlayerSkeleton/Skeleton/ChestPivot")
 
 [node name="PlayerSkeleton" type="Spatial" parent="."]
 
@@ -525,12 +641,27 @@ mesh = ExtResource( 1 )
 skin = SubResource( 1 )
 material/0 = null
 
+[node name="ChestPivot" type="Spatial" parent="PlayerSkeleton/Skeleton"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.78211, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="PlayerSkeleton/Skeleton/ChestPivot"]
+transform = Transform( 0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0 )
+visible = false
+mesh = SubResource( 127 )
+material/0 = null
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Base = ExtResource( 4 )
 anims/Idle = ExtResource( 5 )
 anims/Jump_Hop = ExtResource( 9 )
 anims/Landing = ExtResource( 11 )
 anims/Mid_Air = ExtResource( 10 )
+anims/Pistol_Base = ExtResource( 15 )
+anims/Pistol_Draw = ExtResource( 16 )
+anims/Pistol_Fire = ExtResource( 18 )
+anims/Pistol_Hold = ExtResource( 17 )
+anims/Pistol_Pull_Slide = ExtResource( 13 )
+anims/Pistol_Swap_Mag = ExtResource( 14 )
 anims/Sneaking = ExtResource( 2 )
 anims/Sneaking_Back = ExtResource( 7 )
 anims/Walking = ExtResource( 3 )
@@ -545,19 +676,35 @@ tree_root = SubResource( 12 )
 anim_player = NodePath("../AnimationPlayer")
 active = true
 parameters/playback = SubResource( 13 )
+parameters/Hop/Blend2/blend_amount = 0.0
 parameters/Hop/TimeScale/scale = 0.5
+"parameters/Hop/TimeScale 2/scale" = 100.0
+parameters/Idle/Blend2/blend_amount = 0.0
 parameters/Idle/TimeScale/scale = 1.0
+parameters/Landing/Blend2/blend_amount = 0.0
 parameters/Landing/TimeScale/scale = 0.5
+"parameters/Landing/TimeScale 2/scale" = 100.0
+parameters/Mid_Air/Blend2/blend_amount = 0.0
 parameters/Mid_Air/TimeScale/scale = 1.0
+parameters/Sneaking/Blend2/blend_amount = 0.0
 parameters/Sneaking/TimeScale/scale = 1.5
+parameters/Sneaking_Back/Blend2/blend_amount = 0.0
 parameters/Sneaking_Back/TimeScale/scale = 1.5
+parameters/Walking/Blend2/blend_amount = 0.0
 parameters/Walking/TimeScale/scale = 1.2
+parameters/Walking_Back/Blend2/blend_amount = 0.0
 parameters/Walking_Back/TimeScale/scale = 1.2
 
 [node name="Head" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.32431, -0.68462 )
 
 [node name="Camera" type="Camera" parent="Head"]
+
+[node name="MeshInstance" type="MeshInstance" parent="Head"]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0 )
+visible = false
+mesh = SubResource( 126 )
+material/0 = null
 
 [node name="BodyTarget" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.791369, -0.94389 )
@@ -567,3 +714,7 @@ transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0 )
 visible = false
 mesh = SubResource( 14 )
 material/0 = null
+
+[node name="Weapon" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.169061, 2.06011, -0.800709 )
+script = ExtResource( 12 )

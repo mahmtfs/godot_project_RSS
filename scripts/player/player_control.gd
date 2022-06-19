@@ -5,6 +5,7 @@ export var player_skeleton : NodePath
 export var skeleton: NodePath
 export var body_target: NodePath
 export var animation_tree: NodePath
+export var chest_pivot: NodePath
 
 onready var camera = $Head/Camera
 onready var head = $Head
@@ -13,6 +14,7 @@ onready var anim = get_node(animation_tree)
 onready var sneak = false
 onready var back_pressed = false
 onready var snap_vector = Vector3.ZERO
+onready var x_pivot = get_node(chest_pivot)
 
 # Movement
 var velocity = Vector3.ZERO
@@ -31,6 +33,9 @@ export var air_acceleration = 9.0
 
 const playback = "parameters/playback"
 const spine_bone_id = 1
+const chest_bone_id = 2
+const pistol_offset = 1
+const spine_offset = 0.3 
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -134,16 +139,21 @@ func _physics_process(delta):
 	#player.look_at(self.get_transform().origin + dir, Vector3.UP)
 	
 	var bones = get_node(skeleton)
-	var bone_transform = bones.get_bone_global_pose_no_override(spine_bone_id)
-	var parent_id = bones.get_bone_parent(spine_bone_id)
-	var parent_transform = bones.get_bone_global_pose_no_override(parent_id)
-	#print(-camera.get_global_transform().basis.z)
-	#print()
-	bone_transform = bone_transform.rotated(Vector3.UP, player.get_global_transform().basis.z.signed_angle_to(self.transform.basis.z, Vector3.UP))
-	#print(deg2rad(player.transform.basis.z.signed_angle_to(self.get_global_transform().basis.z, Vector3.UP)) / 180)
-	#bone_transform = bone_transform.rotated(Vector3.UP, rad2deg(target_dir.angle_to(-camera.get_global_transform().basis.z)))
-	bone_transform.origin.x = parent_transform.origin.x
-	bones.set_bone_global_pose_override(spine_bone_id, bone_transform, 1.0, true)
+	var spine_transform = bones.get_bone_global_pose_no_override(spine_bone_id)
+	var spine_parent_id = bones.get_bone_parent(spine_bone_id)
+	var spine_parent_transform = bones.get_bone_global_pose_no_override(spine_parent_id)
+	#var axis = x_pivot.transform.basis.z.normalized().cross(head.transform.basis.z.normalized())
+	#spine_transform = spine_transform.rotated(axis.normalized(), x_pivot.transform.basis.z.signed_angle_to(head.transform.basis.z, axis))
+	spine_transform = spine_transform.rotated(Vector3.RIGHT, x_pivot.transform.basis.z.signed_angle_to(head.transform.basis.z, Vector3.RIGHT))
+	spine_transform.origin = spine_parent_transform.origin
+	spine_transform.origin.y += spine_offset
+	bones.set_bone_global_pose_override(spine_bone_id, spine_transform, 1.0, true)
+	
+	spine_transform = spine_transform.rotated(Vector3.UP, player.get_global_transform().basis.z.signed_angle_to(self.transform.basis.z, Vector3.UP))
+	spine_transform.origin.x = spine_parent_transform.origin.x
+	bones.set_bone_global_pose_override(spine_bone_id, spine_transform, 1.0, true)
+	#print(x_pivot.transform.basis.z.signed_angle_to(head.transform.basis.z, axis.normalized()))
+	#print(player.get_global_transform().basis.z.signed_angle_to(head.get_global_transform().basis.z, x_pivot.get_global_transform().basis.x.normalized()))
 	
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -152,7 +162,6 @@ func _input(event):
 		head.rotation_degrees.x = clamp(head.rotation_degrees.x, -75, 75)
 		# Rotates the view horizontally
 		self.rotate_y(deg2rad(event.relative.x * mouse_sensitivity * -1))
-
 
 # To show/hide the cursor
 func window_activity():
