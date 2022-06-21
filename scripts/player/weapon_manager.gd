@@ -1,19 +1,22 @@
 extends Node
 class_name Weapon_Manager
 
+export var weapon_node: NodePath
+
 onready var inventory = {"primary": null, "secondary": null}
 onready var weapon_types = ["Pistol"]
 onready var timer = get_node("Timer")
 onready var reset = true
 onready var player_node = get_parent()
+#onready var weapon_vis_switch = get_node(weapon_node)
 
-
-var ammo = 1
+var ammo = 10
 var elapsed = 0.0
 var animationlength = 0.0
 var timer_once_reset = false
 var prev_anim = ""
 var cur_animation = ""
+var fired = false
 
 func _back_to_hold():
 	var anim_ref = player_node.anim
@@ -22,6 +25,11 @@ func _back_to_hold():
 	var state = playback.get_current_node()
 	var anim_to_change = state_machine.get_node("%s" % state).get_node("Weapon")
 	var cur_animation = "%s_Hold" % player_node.weapon
+	var hands = player_node.camera.get_child(0)
+	if ammo:
+		hands.get_node("AnimationPlayer").current_animation = "BasePose"
+	else:
+		hands.get_node("AnimationPlayer").current_animation = "Empty_Pose"
 	anim_to_change.animation = cur_animation
 
 func start_timer(animationlength):
@@ -36,6 +44,8 @@ func weapon_handle():
 	var state = playback.get_current_node()
 	#timer.connect("timeout", self, "_on_Timer_timeout")
 	if player_node.weapon:
+		var hands = player_node.camera.get_child(0)
+		#weapon_vis_switch.visible = true
 		var anim_to_change = state_machine.get_node("%s" % state).get_node("Weapon")
 		if state != prev_anim:
 			if not reset:
@@ -47,18 +57,21 @@ func weapon_handle():
 				ammo = 0
 			else:
 				ammo = 1
-		if Input.is_action_just_pressed("game_fire") and reset:
+		if Input.is_action_just_pressed("game_fire") and timer.time_left < 0.3 and ammo:
+			hands.get_node("AnimationPlayer").current_animation = "BasePose"
+			hands.get_node("AnimationPlayer").current_animation = "Fire"
 			reset = false
 			cur_animation = "%s_Fire" % player_node.weapon
 			anim_to_change.animation = cur_animation
 			animationlength = get_node(anim_ref.anim_player).get_animation(cur_animation).length
 			start_timer(animationlength)
-			
+			ammo -= 1
 			#yield(get_tree().create_timer(animationlength * 2), "timeout")
 			#emit_signal("ready")
-		elif Input.is_action_just_pressed("game_reload") and reset:	
+		elif Input.is_action_just_pressed("game_reload") and reset and ammo < 10:	
 			reset = false
 			if ammo:	
+				hands.get_node("AnimationPlayer").current_animation = "Swap_Mag"
 				cur_animation = "%s_Swap_Mag" % player_node.weapon
 				anim_to_change.animation = cur_animation
 				animationlength = get_node(anim_ref.anim_player).get_animation(cur_animation).length
@@ -66,12 +79,14 @@ func weapon_handle():
 				#yield(get_tree().create_timer(animationlength, true), "timeout")
 				#emit_signal("ready")
 			else:
+				hands.get_node("AnimationPlayer").current_animation = "Pull_Slide"
 				cur_animation = "%s_Pull_Slide" % player_node.weapon
 				anim_to_change.animation = cur_animation
 				animationlength = get_node(anim_ref.anim_player).get_animation(cur_animation).length
 				start_timer(animationlength)
 				#yield(get_tree().create_timer(animationlength * 2), "timeout")
 				#emit_signal("ready")
+			ammo = 10
 		elif timer_once_reset and reset:
 			_back_to_hold()
 		#print(timer.time_left)
@@ -82,6 +97,7 @@ func weapon_handle():
 		anim_ref.set("parameters/%s/Blend2/blend_amount" % state,  1)
 	else:
 		anim_ref.set("parameters/%s/Blend2/blend_amount" % state,  0)
+		#weapon_vis_switch.visible = false
 	prev_anim = state
 
 func timer_timeout():

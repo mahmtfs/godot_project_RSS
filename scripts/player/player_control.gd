@@ -15,6 +15,7 @@ onready var sneak = false
 onready var back_pressed = false
 onready var snap_vector = Vector3.ZERO
 onready var x_pivot = get_node(chest_pivot)
+onready var weapon_pos = get_node("PlayerSkeleton/Skeleton/Weapon")
 
 # Weapon Manager
 onready var weapon_manager = get_node("Weapon_Manager")
@@ -154,12 +155,21 @@ func _physics_process(delta):
 	
 	#Weapon equip
 	if Input.is_action_just_pressed("game_interact"):
+		var weapon_node = load("res://scenes/Pistol.tscn").instance()
+		var fps_hands = load("res://scenes/Pistol_reload.tscn").instance()
 		if armed:
 			weapon = ""
 			armed = false
+			var child_to_delete = weapon_pos.get_child(0)
+			weapon_pos.remove_child(child_to_delete)
+			child_to_delete = camera.get_child(0)
+			camera.remove_child(child_to_delete)
 		else:
 			weapon = "Pistol"
 			armed = true
+			weapon_pos.add_child(weapon_node)
+			camera.add_child(fps_hands)
+			fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
 			
 	weapon_manager.weapon_handle()	
 	

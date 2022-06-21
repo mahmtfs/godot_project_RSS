@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/pistol_reload.glb-5ecbee245001854bea372daf04674f3c.scn"
+path="res://.import/pistol_reload.glb-034ce5c3c51578cb67156c2c06ec0f1b.scn"
 
 [deps]
 
-source_file="res://models/player_model/player/additional_animations/save/pistol_reload.glb"
-dest_files=[ "res://.import/pistol_reload.glb-5ecbee245001854bea372daf04674f3c.scn" ]
+source_file="res://models/player_model/player/additional_animations/hands_animations/Pistol/pistol_reload.glb"
+dest_files=[ "res://.import/pistol_reload.glb-034ce5c3c51578cb67156c2c06ec0f1b.scn" ]
 
 [params]
 
@@ -23,7 +23,7 @@ materials/keep_on_reimport=true
 meshes/octahedral_compression=true
 meshes/compress=4286
 meshes/ensure_tangents=true
-meshes/storage=0
+meshes/storage=1
 meshes/light_baking=0
 meshes/lightmap_texel_size=0.1
 skins/use_named_skins=true
