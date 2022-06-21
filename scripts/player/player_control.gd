@@ -7,14 +7,19 @@ export var body_target: NodePath
 export var animation_tree: NodePath
 export var chest_pivot: NodePath
 
+onready var anim = get_node(animation_tree)
 onready var camera = $Head/Camera
 onready var head = $Head
 onready var target_dir = -self.global_transform.basis.z
-onready var anim = get_node(animation_tree)
 onready var sneak = false
 onready var back_pressed = false
 onready var snap_vector = Vector3.ZERO
 onready var x_pivot = get_node(chest_pivot)
+
+# Weapon Manager
+onready var weapon_manager = get_node("Weapon_Manager")
+onready var weapon = ""
+onready var armed = false
 
 # Movement
 var velocity = Vector3.ZERO
@@ -45,16 +50,8 @@ func _ready():
 func _process(delta):
 	window_activity()
 
-
-
 func _physics_process(delta):
 	var player = get_node(player_skeleton)
-	"""
-	target.global_transform.origin = (self.get_transform().origin + target_dir)
-	var target_position  = target.transform.origin
-	var new_transform = player.transform.looking_at(target_position, Vector3.UP)
-	player.transform  = player.transform.interpolate_with(new_transform, interpolation_speed * delta)
-	"""
 	
 	var target = get_node(body_target)
 	var interpolation_speed = 10
@@ -155,6 +152,17 @@ func _physics_process(delta):
 	#print(x_pivot.transform.basis.z.signed_angle_to(head.transform.basis.z, axis.normalized()))
 	#print(player.get_global_transform().basis.z.signed_angle_to(head.get_global_transform().basis.z, x_pivot.get_global_transform().basis.x.normalized()))
 	
+	#Weapon equip
+	if Input.is_action_just_pressed("game_interact"):
+		if armed:
+			weapon = ""
+			armed = false
+		else:
+			weapon = "Pistol"
+			armed = true
+			
+	weapon_manager.weapon_handle()	
+	
 func _input(event):
 	if event is InputEventMouseMotion:
 		# Rotates the view vertically
@@ -162,7 +170,10 @@ func _input(event):
 		head.rotation_degrees.x = clamp(head.rotation_degrees.x, -75, 75)
 		# Rotates the view horizontally
 		self.rotate_y(deg2rad(event.relative.x * mouse_sensitivity * -1))
-
+	
+	
+		
+		
 # To show/hide the cursor
 func window_activity():
 	if Input.is_action_just_pressed("ui_cancel"):
