@@ -59,7 +59,11 @@ func weapon_handle():
 				ammo = 1
 		if Input.is_action_just_pressed("game_fire") and timer.time_left < 0.3 and ammo:
 			hands.get_node("AnimationPlayer").current_animation = "BasePose"
-			hands.get_node("AnimationPlayer").current_animation = "Fire"
+			if ammo == 1:
+				hands.get_node("AnimationPlayer").current_animation = "Last_Shot"
+			else:
+				hands.get_node("AnimationPlayer").current_animation = "Fire"
+			
 			reset = false
 			cur_animation = "%s_Fire" % player_node.weapon
 			anim_to_change.animation = cur_animation
