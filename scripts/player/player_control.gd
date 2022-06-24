@@ -15,12 +15,11 @@ onready var sneak = false
 onready var back_pressed = false
 onready var snap_vector = Vector3.ZERO
 onready var x_pivot = get_node(chest_pivot)
-onready var weapon_pos = get_node("PlayerSkeleton/Skeleton/Weapon")
+#onready var weapon_pos = get_node("PlayerSkeleton/Skeleton/Weapon")
 
 # Weapon Manager
-onready var weapon_manager = get_node("Weapon_Manager")
-onready var weapon = ""
-onready var armed = false
+#onready var weapon_manager = get_node("Weapon_Manager")
+onready var inventory = get_node("Inventory")
 
 # Movement
 var velocity = Vector3.ZERO
@@ -134,14 +133,12 @@ func _physics_process(delta):
 	var target_position  = target.transform.origin
 	var new_transform = player.transform.looking_at(target_position, Vector3.UP)
 	player.transform  = player.transform.interpolate_with(new_transform, interpolation_speed * delta)
-	#player.look_at(self.get_transform().origin + dir, Vector3.UP)
 	
 	var bones = get_node(skeleton)
 	var spine_transform = bones.get_bone_global_pose_no_override(spine_bone_id)
 	var spine_parent_id = bones.get_bone_parent(spine_bone_id)
 	var spine_parent_transform = bones.get_bone_global_pose_no_override(spine_parent_id)
-	#var axis = x_pivot.transform.basis.z.normalized().cross(head.transform.basis.z.normalized())
-	#spine_transform = spine_transform.rotated(axis.normalized(), x_pivot.transform.basis.z.signed_angle_to(head.transform.basis.z, axis))
+	
 	spine_transform = spine_transform.rotated(Vector3.RIGHT, x_pivot.transform.basis.z.signed_angle_to(head.transform.basis.z, Vector3.RIGHT))
 	spine_transform.origin = spine_parent_transform.origin
 	spine_transform.origin.y += spine_offset
@@ -150,11 +147,22 @@ func _physics_process(delta):
 	spine_transform = spine_transform.rotated(Vector3.UP, player.get_global_transform().basis.z.signed_angle_to(self.transform.basis.z, Vector3.UP))
 	spine_transform.origin.x = spine_parent_transform.origin.x
 	bones.set_bone_global_pose_override(spine_bone_id, spine_transform, 1.0, true)
-	#print(x_pivot.transform.basis.z.signed_angle_to(head.transform.basis.z, axis.normalized()))
-	#print(player.get_global_transform().basis.z.signed_angle_to(head.get_global_transform().basis.z, x_pivot.get_global_transform().basis.x.normalized()))
 	
 	#Weapon equip
 	if Input.is_action_just_pressed("game_interact"):
+		#var fps_hands = load("res://scenes/Pistol_reload.tscn").instance()
+		var weapon_node = load("res://scenes/Pistol.tscn").instance()
+		inventory.add_weapon(weapon_node)
+		#fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+		#camera.add_child(fps_hands)	
+	if Input.is_action_just_pressed("game_drop"):
+		inventory.drop_weapon()
+		#var child_to_delete = camera.get_child(0)
+		#camera.remove_child(child_to_delete)
+		#weapon_pos.remove_child(child_to_delete)
+	
+	inventory.inventory_handle()
+	"""
 		var weapon_node = load("res://scenes/Pistol.tscn").instance()
 		var fps_hands = load("res://scenes/Pistol_reload.tscn").instance()
 		if armed:
@@ -172,7 +180,7 @@ func _physics_process(delta):
 			fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
 			
 	weapon_manager.weapon_handle()	
-	
+	"""
 func _input(event):
 	if event is InputEventMouseMotion:
 		# Rotates the view vertically
