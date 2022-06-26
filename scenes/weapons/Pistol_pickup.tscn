@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://scripts/weapon_pickups.gd" type="Script" id=1]
+[ext_resource path="res://models/weapons/pistol_model_Cube002.mesh" type="ArrayMesh" id=2]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 0.220873, 1.00776, 1.52661 )
+
+[node name="Pistol_pickup" type="RigidBody"]
+mass = 1.53061
+script = ExtResource( 1 )
+weapon_name = "Pistol"
+
+[node name="Pistol" type="MeshInstance" parent="."]
+transform = Transform( 0.12, 0, 0, 0, 0.12, 0, 0, 0, 0.12, 0.0275157, 0, 0 )
+mesh = ExtResource( 2 )
+material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 0.12, 0, 0, 0, 0.12, 0, 0, 0, 0.12, 0.0275157, -0.0548063, -0.0144993 )
+shape = SubResource( 1 )

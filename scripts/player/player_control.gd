@@ -149,17 +149,13 @@ func _physics_process(delta):
 	bones.set_bone_global_pose_override(spine_bone_id, spine_transform, 1.0, true)
 	
 	#Weapon equip
-	if Input.is_action_just_pressed("game_interact"):
-		#var fps_hands = load("res://scenes/Pistol_reload.tscn").instance()
-		var weapon_node = load("res://scenes/Pistol.tscn").instance()
-		inventory.add_weapon(weapon_node)
-		#fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
-		#camera.add_child(fps_hands)	
+	#if Input.is_action_just_pressed("game_interact"):
+	#	var weapon_node = load("res://scenes/weapons/Pistol.tscn").instance()
+	#	inventory.add_weapon(weapon_node)
 	if Input.is_action_just_pressed("game_drop"):
 		inventory.drop_weapon()
-		#var child_to_delete = camera.get_child(0)
-		#camera.remove_child(child_to_delete)
-		#weapon_pos.remove_child(child_to_delete)
+	
+	process_weapon_pickup()
 	
 	inventory.inventory_handle()
 	"""
@@ -189,7 +185,19 @@ func _input(event):
 		# Rotates the view horizontally
 		self.rotate_y(deg2rad(event.relative.x * mouse_sensitivity * -1))
 	
+
+func process_weapon_pickup():
+	var from = camera.global_transform.origin
+	var to = camera.global_transform.origin - camera.global_transform.basis.z.normalized() * 5.0
+	var space_state = get_world().direct_space_state
+	var collision = space_state.intersect_ray(from, to, [owner], 1)
 	
+	if collision:
+		var body = collision["collider"]
+		if body.has_method("get_picked_up"):
+			if Input.is_action_just_pressed("game_interact"):
+				if not inventory.is_full():
+					inventory.add_weapon(body)
 		
 		
 # To show/hide the cursor

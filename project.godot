@@ -8,11 +8,27 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Spatial",
+"class": "Weapon",
+"language": "GDScript",
+"path": "res://weapon.gd"
+} ]
+_global_script_class_icons={
+"Weapon": ""
+}
+
 [application]
 
 config/name="Ready Set Shoot"
 run/main_scene="res://scenes/World.tscn"
 config/icon="res://icon.png"
+
+[debug]
+
+gdscript/warnings/shadowed_variable=false
+gdscript/warnings/unused_argument=false
+gdscript/warnings/return_value_discarded=false
 
 [importer_defaults]
 

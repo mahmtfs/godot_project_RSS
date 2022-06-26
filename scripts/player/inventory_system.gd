@@ -7,6 +7,8 @@ onready var player_node = get_parent()
 
 var current_slot_pos = 0
 
+func is_full():
+	return slots[0] and slots[1]
 
 func inventory_handle():
 		#print("ooga")
@@ -18,9 +20,9 @@ func inventory_handle():
 			to_del = player_node.camera.get_child(0)
 			player_node.camera.remove_child(to_del)
 		if slots[current_slot_pos]:
-			var weapon = "Pistol"
-			var weapon_node = load("res://scenes/%s.tscn" % weapon).instance()
-			var fps_hands = load("res://scenes/%s_reload.tscn" % weapon).instance()
+			var weapon_name = slots[current_slot_pos].weapon_name
+			var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
+			var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
 			weapon_pos.add_child(weapon_node)
 			fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
 			player_node.camera.add_child(fps_hands)
@@ -32,21 +34,23 @@ func inventory_handle():
 			to_del = player_node.camera.get_child(0)
 			player_node.camera.remove_child(to_del)
 		if slots[current_slot_pos]:
-			var weapon = "Pistol"
-			var weapon_node = load("res://scenes/%s.tscn" % weapon).instance()
-			var fps_hands = load("res://scenes/%s_reload.tscn" % weapon).instance()
+			var weapon_name = slots[current_slot_pos].weapon_name
+			var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
+			var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
 			weapon_pos.add_child(weapon_node)
 			fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
 			player_node.camera.add_child(fps_hands)
-	var weapon = "Pistol" if slots[current_slot_pos] else ""
-	weapon_manager.weapon_handle(weapon)
+	#var weapon = "Pistol" if slots[current_slot_pos] else ""
+	weapon_manager.weapon_handle(slots[current_slot_pos])
 
-func add_weapon(weapon_instance):
+func add_weapon(weapon_pickup):
+	var weapon_instance = load("res://scenes/weapons/%s.tscn" % weapon_pickup.weapon_name).instance()
+	weapon_pickup.get_picked_up()
 	if not slots[current_slot_pos]:
 		slots[current_slot_pos] = weapon_instance
-		var weapon = "Pistol"
-		var fps_hands = load("res://scenes/%s_reload.tscn" % weapon).instance()
-		var weapon_node = load("res://scenes/%s.tscn" % weapon).instance()
+		var weapon_name = weapon_instance.weapon_name
+		var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
+		var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
 		weapon_pos.add_child(weapon_node)
 		fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
 		player_node.camera.add_child(fps_hands)
@@ -73,6 +77,9 @@ func drop_weapon():
 		weapon_pos.remove_child(to_del)
 		to_del = player_node.camera.get_child(0)
 		player_node.camera.remove_child(to_del)
+		var weapon_pickup = load("res://scenes/weapons/%s_pickup.tscn" % slots[current_slot_pos].weapon_name).instance()
+		get_tree().get_root().add_child(weapon_pickup)
+		weapon_pickup.get_thrown()
 		slots[current_slot_pos] = null
+		
 		print(slots)
-

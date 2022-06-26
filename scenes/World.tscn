@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scenes/player.tscn" type="PackedScene" id=1]
-[ext_resource path="res://scenes/floor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/environment/floor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/weapons/Pistol_pickup.tscn" type="PackedScene" id=3]
 
 [node name="Main" type="Spatial"]
 
@@ -15,7 +16,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.07714, 0.51717 )
 transform = Transform( 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0, 0, 1, -19.3209, -0.555, 25.4685 )
 
 [node name="floor4" parent="." instance=ExtResource( 2 )]
-transform = Transform( 0.1, 0, 0, 0, 20, 0, 0, 0, 0.1, 9.80087, 0, 3.3836 )
+transform = Transform( 0.1, 0, 0, 0, 20, 0, 0, 0, 0.1, -4.08465, -0.943031, 3.3836 )
 
 [node name="floor5" parent="." instance=ExtResource( 2 )]
 transform = Transform( 0.1, 0, 0, 0, 20, 0, 0, 0, 0.1, 16.9025, 2.22939, 10.0161 )
@@ -32,3 +33,12 @@ light_energy = 0.4
 light_size = 1.0
 light_bake_mode = 2
 shadow_enabled = true
+
+[node name="Pistol_pickup" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.44746, 1.72157, 2.50307 )
+
+[node name="Pistol_pickup2" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.44746, 1.72157, 3.72828 )
+
+[node name="Pistol_pickup3" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.94463, 3.44314, 4.73445 )
