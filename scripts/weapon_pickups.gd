@@ -1,6 +1,7 @@
 extends RigidBody
 
 export var weapon_name = ""
+export var ammo = 10
 
 onready var player_node = get_tree().get_root().get_node("Main/player")
 

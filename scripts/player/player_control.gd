@@ -15,16 +15,19 @@ onready var sneak = false
 onready var back_pressed = false
 onready var snap_vector = Vector3.ZERO
 onready var x_pivot = get_node(chest_pivot)
+onready var m_move
 #onready var weapon_pos = get_node("PlayerSkeleton/Skeleton/Weapon")
 
 # Weapon Manager
 #onready var weapon_manager = get_node("Weapon_Manager")
 onready var inventory = get_node("Inventory")
+onready var space_state = get_world().direct_space_state
 
 # Movement
 var velocity = Vector3.ZERO
 var current_vel = Vector3.ZERO
 var dir = Vector3.ZERO
+var move = false
 
 export var walk_speed = 20
 export var sneak_speed = 10
@@ -184,12 +187,12 @@ func _input(event):
 		head.rotation_degrees.x = clamp(head.rotation_degrees.x, -75, 75)
 		# Rotates the view horizontally
 		self.rotate_y(deg2rad(event.relative.x * mouse_sensitivity * -1))
-	
+		m_move = -event.relative
 
 func process_weapon_pickup():
 	var from = camera.global_transform.origin
 	var to = camera.global_transform.origin - camera.global_transform.basis.z.normalized() * 5.0
-	var space_state = get_world().direct_space_state
+	space_state = get_world().direct_space_state
 	var collision = space_state.intersect_ray(from, to, [owner], 1)
 	
 	if collision:

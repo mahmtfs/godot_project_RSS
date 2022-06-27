@@ -670,7 +670,7 @@ material/0 = null
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.78211, 0 )
 
 [node name="Weapon" type="BoneAttachment" parent="PlayerSkeleton/Skeleton"]
-transform = Transform( -0.916512, 0.289979, -0.275535, -0.146673, -0.884467, -0.442952, -0.372148, -0.365558, 0.853155, 0.479664, 1.46821, 0.101247 )
+transform = Transform( -0.916517, 0.289973, -0.275526, -0.146653, -0.88445, -0.442993, -0.372145, -0.365604, 0.853137, 0.479566, 1.4682, 0.101355 )
 bone_name = "hand_r"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -732,12 +732,16 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.32431, -0.68462 )
 [node name="Camera" type="Camera" parent="Head"]
 cull_mask = 1048573
 
+[node name="AimTarget" type="Spatial" parent="Head"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1000 )
+
 [node name="BodyTarget" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.791369, -0.94389 )
 
 [node name="Weapon_Manager" type="Node" parent="."]
 script = ExtResource( 12 )
 weapon_node = NodePath("../PlayerSkeleton/Skeleton/Weapon")
+aim_target_node = NodePath("../Head/AimTarget")
 
 [node name="Timer" type="Timer" parent="Weapon_Manager"]
 
