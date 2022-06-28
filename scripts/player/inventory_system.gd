@@ -24,7 +24,11 @@ func inventory_handle():
 			var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
 			var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
 			weapon_pos.add_child(weapon_node)
-			fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+			if slots[current_slot_pos].ammo:
+				fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+			else:
+				fps_hands.get_node("AnimationPlayer").current_animation = "Empty_Pose"
+			#fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
 			player_node.camera.add_child(fps_hands)
 	if Input.is_action_just_pressed("game_slot_2"):
 		current_slot_pos = 1
@@ -38,13 +42,18 @@ func inventory_handle():
 			var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
 			var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
 			weapon_pos.add_child(weapon_node)
-			fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+			if slots[current_slot_pos].ammo:
+				fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+			else:
+				fps_hands.get_node("AnimationPlayer").current_animation = "Empty_Pose"
+			#fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
 			player_node.camera.add_child(fps_hands)
 	#var weapon = "Pistol" if slots[current_slot_pos] else ""
 	weapon_manager.weapon_handle(slots[current_slot_pos])
 
 func add_weapon(weapon_pickup):
 	var weapon_instance = load("res://scenes/weapons/%s.tscn" % weapon_pickup.weapon_name).instance()
+	weapon_instance.ammo = weapon_pickup.ammo
 	weapon_pickup.get_picked_up()
 	if not slots[current_slot_pos]:
 		slots[current_slot_pos] = weapon_instance
@@ -52,12 +61,15 @@ func add_weapon(weapon_pickup):
 		var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
 		var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
 		weapon_pos.add_child(weapon_node)
-		fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+		if slots[current_slot_pos].ammo:
+			fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+		else:
+			fps_hands.get_node("AnimationPlayer").current_animation = "Empty_Pose"
 		player_node.camera.add_child(fps_hands)
-		print(slots)
+		#print(slots)
 	elif not slots[(current_slot_pos + 1) % 2]:
 		slots[(current_slot_pos + 1) % 2] = weapon_instance
-		print(slots)
+		#print(slots)
 	"""
 	for i in range(slots.size()):
 		if not slots[i]:
@@ -78,8 +90,9 @@ func drop_weapon():
 		to_del = player_node.camera.get_child(0)
 		player_node.camera.remove_child(to_del)
 		var weapon_pickup = load("res://scenes/weapons/%s_pickup.tscn" % slots[current_slot_pos].weapon_name).instance()
+		weapon_pickup.ammo = slots[current_slot_pos].ammo
 		get_tree().get_root().add_child(weapon_pickup)
 		weapon_pickup.get_thrown()
 		slots[current_slot_pos] = null
 		
-		print(slots)
+		#print(slots)

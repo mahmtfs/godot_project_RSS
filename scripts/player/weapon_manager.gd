@@ -99,6 +99,18 @@ func weapon_handle(weapon_node):
 			else:
 				weapon.ammo = 1
 		if Input.is_action_just_pressed("game_fire") and timer.time_left < 0.3 and weapon.ammo:
+			var barrel = hands.get_node("Skeleton 2/Skeleton/Barrel")
+			from = barrel.global_transform.origin
+			to = barrel.global_transform.origin - barrel.global_transform.basis.z.normalized() * 1000.0
+			space_state = player_node.space_state
+			collision = space_state.intersect_ray(from, to, [owner], 1)
+			if collision:
+				var hit_particle = load("res://scenes/particles/hit.tscn").instance()
+				hit_particle.transform.origin = collision.position
+				get_tree().get_root().add_child(hit_particle)
+				hit_particle.emitting = true
+				#print("gotcha")
+				#clone.global_transform.origin = pos
 			hands.get_node("AnimationPlayer").current_animation = "BasePose"
 			recoil_vec = Vector2(random_num.randf_range(-x_range, x_range), 0)
 			var rot_vec = (Vector3(0, recoil_vec.x, 0) + Vector3(recoil_vec.y, 0, 0))
@@ -113,6 +125,7 @@ func weapon_handle(weapon_node):
 			start_timer(animationlength)
 			hands.rotation = hands.rotation.linear_interpolate(rot_vec, 1 * get_process_delta_time())
 			weapon.ammo -= 1
+			
 		elif Input.is_action_just_pressed("game_reload") and reset and weapon.ammo < 10:	
 			reset = false
 			if weapon.ammo:	

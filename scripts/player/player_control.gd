@@ -194,15 +194,15 @@ func process_weapon_pickup():
 	var to = camera.global_transform.origin - camera.global_transform.basis.z.normalized() * 5.0
 	space_state = get_world().direct_space_state
 	var collision = space_state.intersect_ray(from, to, [owner], 1)
-	
+
 	if collision:
 		var body = collision["collider"]
 		if body.has_method("get_picked_up"):
 			if Input.is_action_just_pressed("game_interact"):
 				if not inventory.is_full():
 					inventory.add_weapon(body)
-		
-		
+
+
 # To show/hide the cursor
 func window_activity():
 	if Input.is_action_just_pressed("ui_cancel"):
