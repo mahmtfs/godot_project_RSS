@@ -22,7 +22,7 @@ transform = Transform( 0.1, 0, 0, 0, 20, 0, 0, 0, 0.1, -4.08465, -0.943031, 3.38
 transform = Transform( 0.1, 0, 0, 0, 20, 0, 0, 0, 0.1, 16.9025, 2.22939, 10.0161 )
 
 [node name="floor6" parent="." instance=ExtResource( 2 )]
-transform = Transform( 0.1, 0, 0, 0, 20, 0, 0, 0, 0.1, 9.80087, 4.9363, 18.1022 )
+transform = Transform( 1, 0, 0, 0, 50, 0, 0, 0, 0.1, 9.80087, 4.9363, 18.1022 )
 
 [node name="player" parent="." instance=ExtResource( 1 )]
 

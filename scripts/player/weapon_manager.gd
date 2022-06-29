@@ -3,8 +3,7 @@ extends Node
 export var weapon_node: NodePath
 export var aim_target_node: NodePath
 
-onready var inventory = {"primary": null, "secondary": null}
-onready var weapon_types = ["Pistol"]
+#onready var weapon_types = ["Pistol"]
 onready var timer = get_node("Timer")
 onready var reset = true
 onready var player_node = get_parent()
@@ -23,9 +22,12 @@ var sway_hor = Vector3(0, -0.2, 0)
 var sway_ver = Vector3(-0.2, 0, 0)
 var vec_compensation = 0.3
 var random_num = RandomNumberGenerator.new()
-var x_range = 3.0
-var recoil_vec = Vector2(random_num.randf_range(-x_range, x_range), 0)
-
+var x_range = 5.0
+var y_range_min = 0.5
+var y_range_max = 1.0
+var recoil_vec = Vector2(random_num.randf_range(-x_range, x_range), random_num.randf_range(y_range_min, y_range_max))
+var aiming = false
+var aim_anim_played = false
 
 func _ready():
 	random_num.randomize()
@@ -40,14 +42,17 @@ func _back_to_hold():
 		var cur_animation = "%s_Hold" % weapon.weapon_name
 		var hands = player_node.camera.get_child(0)
 		if weapon.ammo:
-			hands.get_node("AnimationPlayer").current_animation = "BasePose"
+			if aiming:
+				aim_anim_played = true
+				hands.get_node("AnimationPlayer").current_animation = "Aim_Pose"
+			else:
+				hands.get_node("AnimationPlayer").current_animation = "BasePose"
 		else:
 			hands.get_node("AnimationPlayer").current_animation = "Empty_Pose"
 		anim_to_change.animation = cur_animation
 		recoil_vec = Vector2(0, 0)
 		var rot_vec = (Vector3(0, recoil_vec.x, 0) + Vector3(recoil_vec.y, 0, 0))
 		hands.rotation = hands.rotation.linear_interpolate(rot_vec, 5 * get_process_delta_time())
-		
 
 func start_timer(animationlength):
 	timer.set_wait_time(animationlength)
@@ -93,37 +98,67 @@ func weapon_handle(weapon_node):
 				anim_to_change.animation = cur_animation
 				anim_ref.set("parameters/%s/Seek/seek_position" % state,  animationlength - timer.time_left)
 				anim_ref.set("parameters/%s/Blend2/blend_amount" % state,  1)
-		if Input.is_action_just_pressed("game_ctrl"):
-			if weapon.ammo:
-				weapon.ammo = 0
-			else:
-				weapon.ammo = 1
+		
+		if Input.is_action_pressed("game_aim"):
+			if reset and weapon.ammo:
+				aiming = true
+				if aim_anim_played:
+					hands.get_node("AnimationPlayer").current_animation = "Aim_Pose"
+				else:
+					hands.get_node("AnimationPlayer").current_animation = "Aim"
+					reset = false
+					aim_anim_played = true
+				animationlength = hands.get_node("AnimationPlayer").get_animation(hands.get_node("AnimationPlayer").current_animation).length
+				
+				start_timer(animationlength)
+		else:
+			aiming = false
+			aim_anim_played = false
+			
 		if Input.is_action_just_pressed("game_fire") and timer.time_left < 0.3 and weapon.ammo:
+			if aiming and reset:
+				recoil_vec = Vector2()
+			else:
+				recoil_vec = Vector2(random_num.randf_range(-x_range, x_range), random_num.randf_range(y_range_min, y_range_max))
+			var rot_vec = (Vector3(0, recoil_vec.x, 0) + Vector3(recoil_vec.y, 0, 0))
 			var barrel = hands.get_node("Skeleton 2/Skeleton/Barrel")
+			hands.rotation = hands.rotation.linear_interpolate(rot_vec, 0.5 * get_process_delta_time())
 			from = barrel.global_transform.origin
 			to = barrel.global_transform.origin - barrel.global_transform.basis.z.normalized() * 1000.0
 			space_state = player_node.space_state
 			collision = space_state.intersect_ray(from, to, [owner], 1)
 			if collision:
 				var hit_particle = load("res://scenes/particles/hit.tscn").instance()
-				hit_particle.transform.origin = collision.position
 				get_tree().get_root().add_child(hit_particle)
+				hit_particle.global_transform.origin = collision.position
+				#hit_particle.global_transform.basis.z = collision.normal.normalized()
+				#if (Vector3.UP).cross(hit_particle.global_transform.origin - collision.normal) != Vector3() and (Vector3.DOWN).cross(hit_particle.global_transform.origin - collision.normal) != Vector3():
+				hit_particle.look_at(hit_particle.global_transform.origin - collision.normal + Vector3(0.0, 0.0, 0.0001), Vector3(0,1,0))
 				hit_particle.emitting = true
 				#print("gotcha")
 				#clone.global_transform.origin = pos
-			hands.get_node("AnimationPlayer").current_animation = "BasePose"
-			recoil_vec = Vector2(random_num.randf_range(-x_range, x_range), 0)
-			var rot_vec = (Vector3(0, recoil_vec.x, 0) + Vector3(recoil_vec.y, 0, 0))
-			if weapon.ammo == 1:
-				hands.get_node("AnimationPlayer").current_animation = "Last_Shot"
+			if aiming:
+				hands.get_node("AnimationPlayer").current_animation = "Aim_Pose"
+				#recoil_vec = Vector2(random_num.randf_range(-x_range, x_range), random_num.randf_range(1.0, 2.0))
+				#var rot_vec = (Vector3(0, recoil_vec.x, 0) + Vector3(recoil_vec.y, 0, 0))
+				if weapon.ammo == 1:
+					hands.get_node("AnimationPlayer").current_animation = "Aim_Last_Shot"
+				else:
+					hands.get_node("AnimationPlayer").current_animation = "Aim_Fire"
 			else:
-				hands.get_node("AnimationPlayer").current_animation = "Fire"
+				hands.get_node("AnimationPlayer").current_animation = "BasePose"
+				#recoil_vec = Vector2(random_num.randf_range(-x_range, x_range), random_num.randf_range(1.0, 2.0))
+				#var rot_vec = (Vector3(0, recoil_vec.x, 0) + Vector3(recoil_vec.y, 0, 0))
+				if weapon.ammo == 1:
+					hands.get_node("AnimationPlayer").current_animation = "Last_Shot"
+				else:
+					hands.get_node("AnimationPlayer").current_animation = "Fire"
 			reset = false
 			cur_animation = "%s_Fire" % weapon.weapon_name
 			anim_to_change.animation = cur_animation
 			animationlength = get_node(anim_ref.anim_player).get_animation(cur_animation).length
 			start_timer(animationlength)
-			hands.rotation = hands.rotation.linear_interpolate(rot_vec, 1 * get_process_delta_time())
+			#hands.rotation = hands.rotation.linear_interpolate(rot_vec, 1 * get_process_delta_time())
 			weapon.ammo -= 1
 			
 		elif Input.is_action_just_pressed("game_reload") and reset and weapon.ammo < 10:	
