@@ -493,6 +493,9 @@ skeleton = NodePath("PlayerSkeleton/Skeleton")
 body_target = NodePath("BodyTarget")
 animation_tree = NodePath("AnimationTree")
 chest_pivot = NodePath("PlayerSkeleton/Skeleton/ChestPivot")
+model = NodePath("PlayerSkeleton/Skeleton/Body")
+network_tick_rate = NodePath("NetworkTickRate")
+movement_tween = NodePath("MovementTween")
 
 [node name="PlayerSkeleton" type="Spatial" parent="."]
 
@@ -664,7 +667,6 @@ bones/32/enabled = true
 bones/32/bound_children = [  ]
 
 [node name="Body" type="MeshInstance" parent="PlayerSkeleton/Skeleton"]
-layers = 2
 mesh = ExtResource( 1 )
 skin = SubResource( 1 )
 material/0 = null
@@ -673,7 +675,7 @@ material/0 = null
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.78211, 0 )
 
 [node name="Weapon" type="BoneAttachment" parent="PlayerSkeleton/Skeleton"]
-transform = Transform( -0.916539, 0.289947, -0.275481, -0.146564, -0.884369, -0.443184, -0.372126, -0.365819, 0.853052, 0.485863, 1.47589, 0.097794 )
+transform = Transform( -0.916526, 0.289962, -0.275506, -0.146612, -0.884413, -0.443081, -0.372137, -0.365703, 0.853097, 0.4798, 1.46875, 0.101447 )
 bone_name = "hand_r"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -754,4 +756,11 @@ aim_target_node = NodePath("../Head/AimTarget")
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource( 19 )
 
+[node name="NetworkTickRate" type="Timer" parent="."]
+wait_time = 0.03
+autostart = true
+
+[node name="MovementTween" type="Tween" parent="."]
+
 [connection signal="timeout" from="Weapon_Manager/Timer" to="Weapon_Manager" method="timer_timeout"]
+[connection signal="timeout" from="NetworkTickRate" to="." method="_on_NetworkTickRate_timeout"]

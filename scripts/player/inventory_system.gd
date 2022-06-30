@@ -1,9 +1,10 @@
 extends Node
 
 onready var slots = [null, null]
-onready var weapon_manager = get_node("/root/Main/player/Weapon_Manager")
-onready var weapon_pos = get_node("/root/Main/player/PlayerSkeleton/Skeleton/Weapon")
 onready var player_node = get_parent()
+onready var weapon_manager = get_node("/root/Main/%s/Weapon_Manager" % player_node.name)
+onready var weapon_pos = get_node("/root/Main/%s/PlayerSkeleton/Skeleton/Weapon" % player_node.name)
+
 
 var current_slot_pos = 0
 

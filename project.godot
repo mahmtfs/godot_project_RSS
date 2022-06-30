@@ -24,10 +24,16 @@ config/name="Ready Set Shoot"
 run/main_scene="res://scenes/World.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Network="*res://scripts/network/network.gd"
+Global="*res://global.gd"
+
 [debug]
 
 gdscript/warnings/shadowed_variable=false
 gdscript/warnings/unused_argument=false
+gdscript/warnings/unused_signal=false
 gdscript/warnings/return_value_discarded=false
 
 [importer_defaults]
