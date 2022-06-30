@@ -28,6 +28,7 @@ var y_range_max = 1.0
 var recoil_vec = Vector2(random_num.randf_range(-x_range, x_range), random_num.randf_range(y_range_min, y_range_max))
 var aiming = false
 var aim_anim_played = false
+var draw_anim_played = false
 
 func _ready():
 	random_num.randomize()
@@ -45,6 +46,7 @@ func _back_to_hold():
 			if aiming:
 				aim_anim_played = true
 				hands.get_node("AnimationPlayer").current_animation = "Aim_Pose"
+				cur_animation = "%s_Aim_Pose" % weapon.weapon_name
 			else:
 				hands.get_node("AnimationPlayer").current_animation = "BasePose"
 		else:
@@ -99,17 +101,31 @@ func weapon_handle(weapon_node):
 				anim_ref.set("parameters/%s/Seek/seek_position" % state,  animationlength - timer.time_left)
 				anim_ref.set("parameters/%s/Blend2/blend_amount" % state,  1)
 		
+		if not draw_anim_played:
+			if weapon.ammo:
+				hands.get_node("AnimationPlayer").current_animation = "Draw"
+			else:
+				hands.get_node("AnimationPlayer").current_animation = "Draw_Empty"
+			reset = false
+			animationlength = hands.get_node("AnimationPlayer").get_animation(hands.get_node("AnimationPlayer").current_animation).length
+			cur_animation = "%s_Draw" % weapon.weapon_name
+			anim_to_change.animation = cur_animation
+			start_timer(animationlength)
+			draw_anim_played = true
+		
 		if Input.is_action_pressed("game_aim"):
 			if reset and weapon.ammo:
 				aiming = true
 				if aim_anim_played:
 					hands.get_node("AnimationPlayer").current_animation = "Aim_Pose"
+					cur_animation = "%s_Aim_Pose" % weapon.weapon_name
 				else:
 					hands.get_node("AnimationPlayer").current_animation = "Aim"
+					cur_animation = "%s_Aim" % weapon.weapon_name
 					reset = false
 					aim_anim_played = true
 				animationlength = hands.get_node("AnimationPlayer").get_animation(hands.get_node("AnimationPlayer").current_animation).length
-				
+				anim_to_change.animation = cur_animation
 				start_timer(animationlength)
 		else:
 			aiming = false
@@ -154,7 +170,10 @@ func weapon_handle(weapon_node):
 				else:
 					hands.get_node("AnimationPlayer").current_animation = "Fire"
 			reset = false
-			cur_animation = "%s_Fire" % weapon.weapon_name
+			if aiming:
+				cur_animation = "%s_Aim_Fire" % weapon.weapon_name
+			else:
+				cur_animation = "%s_Fire" % weapon.weapon_name
 			anim_to_change.animation = cur_animation
 			animationlength = get_node(anim_ref.anim_player).get_animation(cur_animation).length
 			start_timer(animationlength)
@@ -184,6 +203,7 @@ func weapon_handle(weapon_node):
 			anim_ref.set("parameters/%s/Seek/seek_position" % state,  animationlength - timer.time_left)
 		anim_ref.set("parameters/%s/Blend2/blend_amount" % state,  1)
 	else:
+		draw_anim_played = false
 		anim_ref.set("parameters/%s/Blend2/blend_amount" % state,  0)
 	prev_anim = state
 

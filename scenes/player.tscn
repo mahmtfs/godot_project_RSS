@@ -1,4 +1,4 @@
-[gd_scene load_steps=106 format=2]
+[gd_scene load_steps=109 format=2]
 
 [ext_resource path="res://models/player_model/player/player_Cube004.mesh" type="ArrayMesh" id=1]
 [ext_resource path="res://models/player_model/player/Sneaking.anim" type="Animation" id=2]
@@ -13,12 +13,15 @@
 [ext_resource path="res://models/player_model/player/Landing.anim" type="Animation" id=11]
 [ext_resource path="res://scripts/player/weapon_manager.gd" type="Script" id=12]
 [ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Pull_Slide.anim" type="Animation" id=13]
-[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Swap_Mag.anim" type="Animation" id=14]
-[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Base.anim" type="Animation" id=15]
-[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Draw.anim" type="Animation" id=16]
-[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Hold.anim" type="Animation" id=17]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Hold.anim" type="Animation" id=14]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Swap_Mag.anim" type="Animation" id=15]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Base.anim" type="Animation" id=16]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Draw.anim" type="Animation" id=17]
 [ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Fire.anim" type="Animation" id=18]
 [ext_resource path="res://scripts/player/inventory_system.gd" type="Script" id=19]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Aim_Pose.anim" type="Animation" id=20]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Aim_Fire.anim" type="Animation" id=21]
+[ext_resource path="res://models/player_model/player/additional_animations/reloads/Pistol_Aim.anim" type="Animation" id=22]
 
 [sub_resource type="Skin" id=1]
 resource_name = "Skin"
@@ -157,7 +160,7 @@ nodes/TimeScale/position = Vector2( 640, 106.667 )
 nodes/Weapon/node = SubResource( 111 )
 nodes/Weapon/position = Vector2( -80, 240 )
 nodes/output/position = Vector2( 826.667, 106.667 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Jump_Hop", "Blend2", 1, "Seek", "Seek", 0, "Weapon" ]
+node_connections = [ "output", 0, "TimeScale", "Seek", 0, "Weapon", "Blend2", 0, "Jump_Hop", "Blend2", 1, "Seek", "TimeScale", 0, "Blend2" ]
 
 [sub_resource type="AnimationNodeBlend2" id=107]
 filter_enabled = true
@@ -186,7 +189,7 @@ nodes/TimeScale/position = Vector2( 426.667, 53.3333 )
 nodes/Weapon/node = SubResource( 108 )
 nodes/Weapon/position = Vector2( -160, 160 )
 nodes/output/position = Vector2( 773.333, 80 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Idle", "Blend2", 1, "Seek", "Seek", 0, "Weapon" ]
+node_connections = [ "output", 0, "TimeScale", "Seek", 0, "Weapon", "Blend2", 0, "Idle", "Blend2", 1, "Seek", "TimeScale", 0, "Blend2" ]
 
 [sub_resource type="AnimationNodeBlend2" id=112]
 filter_enabled = true
@@ -219,7 +222,7 @@ nodes/TimeScale/position = Vector2( 586.667, 106.667 )
 nodes/Weapon/node = SubResource( 114 )
 nodes/Weapon/position = Vector2( -133.333, 213.333 )
 nodes/output/position = Vector2( 746.667, 80 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Landing", "Blend2", 1, "Seek", "Seek", 0, "Weapon" ]
+node_connections = [ "output", 0, "TimeScale", "Seek", 0, "Weapon", "Blend2", 0, "Landing", "Blend2", 1, "Seek", "TimeScale", 0, "Blend2" ]
 
 [sub_resource type="AnimationNodeBlend2" id=115]
 filter_enabled = true
@@ -248,7 +251,7 @@ nodes/TimeScale/position = Vector2( 480, 53.3333 )
 nodes/Weapon/node = SubResource( 116 )
 nodes/Weapon/position = Vector2( -26.6667, 213.333 )
 nodes/output/position = Vector2( 666.667, 80 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Mid_Air", "Blend2", 1, "Seek", "Seek", 0, "Weapon" ]
+node_connections = [ "output", 0, "TimeScale", "Seek", 0, "Weapon", "Blend2", 0, "Mid_Air", "Blend2", 1, "Seek", "TimeScale", 0, "Blend2" ]
 
 [sub_resource type="AnimationNodeBlend2" id=117]
 filter_enabled = true
@@ -277,7 +280,7 @@ nodes/TimeScale/position = Vector2( 586.667, 53.3333 )
 nodes/Weapon/node = SubResource( 118 )
 nodes/Weapon/position = Vector2( 0, 240 )
 nodes/output/position = Vector2( 773.333, 80 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Sneaking", "Blend2", 1, "Seek", "Seek", 0, "Weapon" ]
+node_connections = [ "output", 0, "TimeScale", "Seek", 0, "Weapon", "Blend2", 0, "Sneaking", "Blend2", 1, "Seek", "TimeScale", 0, "Blend2" ]
 
 [sub_resource type="AnimationNodeBlend2" id=119]
 filter_enabled = true
@@ -306,7 +309,7 @@ nodes/TimeScale/position = Vector2( 560, 80 )
 nodes/Weapon/node = SubResource( 120 )
 nodes/Weapon/position = Vector2( -26.6667, 240 )
 nodes/output/position = Vector2( 720, 106.667 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Sneaking_Back", "Blend2", 1, "Seek", "Seek", 0, "Weapon" ]
+node_connections = [ "output", 0, "TimeScale", "Seek", 0, "Weapon", "Blend2", 0, "Sneaking_Back", "Blend2", 1, "Seek", "TimeScale", 0, "Blend2" ]
 
 [sub_resource type="AnimationNodeBlend2" id=121]
 filter_enabled = true
@@ -335,7 +338,7 @@ nodes/Walking/position = Vector2( -26.6667, 106.667 )
 nodes/Weapon/node = SubResource( 122 )
 nodes/Weapon/position = Vector2( -186.667, 213.333 )
 nodes/output/position = Vector2( 533.333, 133.333 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Walking", "Blend2", 1, "Seek", "Seek", 0, "Weapon" ]
+node_connections = [ "output", 0, "TimeScale", "Seek", 0, "Weapon", "Blend2", 0, "Walking", "Blend2", 1, "Seek", "TimeScale", 0, "Blend2" ]
 
 [sub_resource type="AnimationNodeBlend2" id=123]
 filter_enabled = true
@@ -364,7 +367,7 @@ nodes/Walking_Back/position = Vector2( -133.333, 133.333 )
 nodes/Weapon/node = SubResource( 124 )
 nodes/Weapon/position = Vector2( -240, 293.333 )
 nodes/output/position = Vector2( 613.333, 160 )
-node_connections = [ "output", 0, "TimeScale", "TimeScale", 0, "Blend2", "Blend2", 0, "Walking_Back", "Blend2", 1, "Seek", "Seek", 0, "Weapon" ]
+node_connections = [ "output", 0, "TimeScale", "Seek", 0, "Weapon", "Blend2", 0, "Walking_Back", "Blend2", 1, "Seek", "TimeScale", 0, "Blend2" ]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id=46]
 xfade_time = 0.3
@@ -568,7 +571,7 @@ bones/14/name = "hand_r"
 bones/14/parent = 13
 bones/14/rest = Transform( 0.999373, -0.0206886, -0.0287295, 0.0229766, 0.996389, 0.0817366, 0.0269348, -0.0823455, 0.99624, -4.09782e-08, 0.403772, -1.2666e-07 )
 bones/14/enabled = true
-bones/14/bound_children = [  ]
+bones/14/bound_children = [ NodePath("Weapon") ]
 bones/15/name = "big_r"
 bones/15/parent = 14
 bones/15/rest = Transform( 0.925425, 0.377197, 0.0362148, -0.378919, 0.921948, 0.0802039, -0.00313546, -0.0879451, 0.99612, 0.0795246, 0.0379543, -0.0399241 )
@@ -670,7 +673,7 @@ material/0 = null
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.78211, 0 )
 
 [node name="Weapon" type="BoneAttachment" parent="PlayerSkeleton/Skeleton"]
-transform = Transform( -0.91649, 0.290006, -0.275581, -0.146767, -0.884552, -0.442751, -0.372166, -0.365331, 0.853244, 0.480726, 1.46828, 0.0999388 )
+transform = Transform( -0.916539, 0.289947, -0.275481, -0.146564, -0.884369, -0.443184, -0.372126, -0.365819, 0.853052, 0.485863, 1.47589, 0.097794 )
 bone_name = "hand_r"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -679,12 +682,15 @@ anims/Idle = ExtResource( 5 )
 anims/Jump_Hop = ExtResource( 9 )
 anims/Landing = ExtResource( 11 )
 anims/Mid_Air = ExtResource( 10 )
-anims/Pistol_Base = ExtResource( 15 )
-anims/Pistol_Draw = ExtResource( 16 )
+anims/Pistol_Aim = ExtResource( 22 )
+anims/Pistol_Aim_Fire = ExtResource( 21 )
+anims/Pistol_Aim_Pose = ExtResource( 20 )
+anims/Pistol_Base = ExtResource( 16 )
+anims/Pistol_Draw = ExtResource( 17 )
 anims/Pistol_Fire = ExtResource( 18 )
-anims/Pistol_Hold = ExtResource( 17 )
+anims/Pistol_Hold = ExtResource( 14 )
 anims/Pistol_Pull_Slide = ExtResource( 13 )
-anims/Pistol_Swap_Mag = ExtResource( 14 )
+anims/Pistol_Swap_Mag = ExtResource( 15 )
 anims/Sneaking = ExtResource( 2 )
 anims/Sneaking_Back = ExtResource( 7 )
 anims/Walking = ExtResource( 3 )

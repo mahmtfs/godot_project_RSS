@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://models/player_model/player/additional_animations/hands_animations/Pistol/pistol_reload.glb" type="PackedScene" id=1]
 [ext_resource path="res://models/player_model/player/additional_animations/hands_animations/Pistol/Empty_Pose.anim" type="Animation" id=2]
@@ -7,14 +7,12 @@
 [ext_resource path="res://models/player_model/player/additional_animations/hands_animations/Pistol/Aim.anim" type="Animation" id=5]
 [ext_resource path="res://models/player_model/player/additional_animations/hands_animations/Pistol/Aim_Fire.anim" type="Animation" id=6]
 [ext_resource path="res://models/player_model/player/additional_animations/hands_animations/Pistol/Aim_Last_Shot.anim" type="Animation" id=7]
+[ext_resource path="res://models/player_model/player/additional_animations/hands_animations/Pistol/Draw_Empty.anim" type="Animation" id=8]
 
 [sub_resource type="CubeMesh" id=1]
 
 [node name="pistol_reload" instance=ExtResource( 1 )]
 transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, -0.1, 0.1 )
-
-[node name="Skeleton" parent="Skeleton 2" index="0"]
-bones/40/bound_children = [ NodePath("Barrel") ]
 
 [node name="Pistol" parent="Skeleton 2/Skeleton" index="0"]
 cast_shadow = 0
@@ -23,7 +21,7 @@ cast_shadow = 0
 cast_shadow = 0
 
 [node name="Barrel" type="BoneAttachment" parent="Skeleton 2/Skeleton" index="2"]
-transform = Transform( 1, -7.10543e-15, 2.38419e-07, -7.10543e-15, 1, 5.96046e-08, -2.38419e-07, -5.96046e-08, 1, 0.00059855, 0.341182, -3.27715 )
+transform = Transform( 0.752212, -0.655822, -0.0638302, 0.63695, 0.698903, 0.325314, -0.168737, -0.285362, 0.943449, 1.3049, -3.22167, -5.4957 )
 bone_name = "gun"
 
 [node name="ShotOrigin" type="MeshInstance" parent="Skeleton 2/Skeleton/Barrel" index="0"]
@@ -38,5 +36,6 @@ anims/Aim = ExtResource( 5 )
 anims/Aim_Fire = ExtResource( 6 )
 anims/Aim_Last_Shot = ExtResource( 7 )
 anims/Aim_Pose = ExtResource( 4 )
+anims/Draw_Empty = ExtResource( 8 )
 anims/Empty_Pose = ExtResource( 2 )
 anims/Last_Shot = ExtResource( 3 )
