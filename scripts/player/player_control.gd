@@ -62,6 +62,7 @@ var puppet_rotation = Vector2()
 var puppet_spine_transform = Transform()
 var puppet_player_transform = Transform()
 var puppet_animation = ""
+var puppet_camera_transform = Transform()
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -170,7 +171,7 @@ func _physics_process(delta):
 		
 		#Weapon equip
 		if Input.is_action_just_pressed("game_drop"):
-			inventory.drop_weapon()
+			inventory.drop_weapon(name)
 		
 		process_weapon_pickup()
 		
@@ -180,24 +181,25 @@ func _physics_process(delta):
 		
 		velocity.x = puppet_velocity.x
 		velocity.z = puppet_velocity.z
-		
+		camera.global_transform = puppet_camera_transform
 		player.global_transform = puppet_player_transform
 		#rotation.y = puppet_rotation.y
 		head.rotation.x = puppet_rotation.x 
 		bones.set_bone_global_pose_override(spine_bone_id, puppet_spine_transform, 1.0, true)
 		#bones.set_bone_global_pose_override(spine_bone_id, puppet_spine_transform_y, 1.0, true)
 		anim[playback].travel(puppet_animation)
-	
+
 	if !movement_tween.is_active():
 		velocity = move_and_slide_with_snap(velocity, snap_vector, Vector3.UP, true, 4, deg2rad(45))
 		
-puppet func update_state(p_position, p_velocity, p_rotation, p_animation, p_spine_transform, p_player_transform):
+puppet func update_state(p_position, p_velocity, p_rotation, p_animation, p_spine_transform, p_player_transform, p_camera_transform):
 	puppet_position = p_position
 	puppet_velocity = p_velocity
 	puppet_rotation = p_rotation
 	puppet_animation = p_animation
 	puppet_spine_transform = p_spine_transform
 	puppet_player_transform = p_player_transform
+	puppet_camera_transform = p_camera_transform
 	#puppet_spine_transform_x = p_spine_transform_x
 	#puppet_spine_transform_y = p_spine_transform_y
 	movement_tween.interpolate_property(self, "global_transform", global_transform, Transform(global_transform.basis, p_position), 0.1)
@@ -218,7 +220,7 @@ func process_weapon_pickup():
 	var to = camera.global_transform.origin - camera.global_transform.basis.z.normalized() * 5.0
 	space_state = get_world().direct_space_state
 	var collision = space_state.intersect_ray(from, to, [owner], 1)
-
+	
 	if collision:
 		var body = collision["collider"]
 		if body.has_method("get_picked_up"):
@@ -229,11 +231,12 @@ func process_weapon_pickup():
 
 # To show/hide the cursor
 func window_activity():
-	if Input.is_action_just_pressed("ui_cancel"):
-		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	if is_network_master():
+		if Input.is_action_just_pressed("ui_cancel"):
+			if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+				Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			else:
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
 func _on_NetworkTickRate_timeout():
@@ -244,6 +247,7 @@ func _on_NetworkTickRate_timeout():
 		 Vector2(head.rotation.x, rotation.y),
 		 anim[playback].get_current_node(),
 		 spine_transform,
-		 player.global_transform)
+		 player.global_transform,
+		 camera.global_transform)
 	else:
 		network_tick_rate.stop()

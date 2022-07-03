@@ -1,10 +1,11 @@
 extends Node
 
 const DEFAULT_PORT = 8080
-const MAX_CLIENTS = 2
+const MAX_CLIENTS = 3
 
 var server = null
 var client = null
+
 
 var ip_adress = "127.0.0.1"
 

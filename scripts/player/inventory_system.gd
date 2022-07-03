@@ -4,62 +4,68 @@ onready var slots = [null, null]
 onready var player_node = get_parent()
 onready var weapon_manager = get_node("/root/Main/%s/Weapon_Manager" % player_node.name)
 onready var weapon_pos = get_node("/root/Main/%s/PlayerSkeleton/Skeleton/Weapon" % player_node.name)
-
+var puppet_weapon_name = ""
+var puppet_weapon_pickup_name = ""
 
 var current_slot_pos = 0
 
 func is_full():
-	return slots[0] and slots[1]
+	if is_network_master():
+		return slots[0] and slots[1]
 
 func inventory_handle():
-		#print("ooga")
-	if Input.is_action_just_pressed("game_slot_1"):
-		current_slot_pos = 0
-		if weapon_pos.get_children():
-			var to_del = weapon_pos.get_child(0)
-			weapon_pos.remove_child(to_del)
-			to_del = player_node.camera.get_child(0)
-			player_node.camera.remove_child(to_del)
-		if slots[current_slot_pos]:
-			var weapon_name = slots[current_slot_pos].weapon_name
-			var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
-			var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
-			weapon_pos.add_child(weapon_node)
-			"""
-			if slots[current_slot_pos].ammo:
-				fps_hands.get_node("AnimationPlayer").current_animation = ""
-			else:
-				fps_hands.get_node("AnimationPlayer").current_animation = ""
-			"""
-			#fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
-			player_node.camera.add_child(fps_hands)
-	if Input.is_action_just_pressed("game_slot_2"):
-		current_slot_pos = 1
-		if weapon_pos.get_children():
-			var to_del = weapon_pos.get_child(0)
-			weapon_pos.remove_child(to_del)
-			to_del = player_node.camera.get_child(0)
-			player_node.camera.remove_child(to_del)
-		if slots[current_slot_pos]:
-			var weapon_name = slots[current_slot_pos].weapon_name
-			var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
-			var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
-			weapon_pos.add_child(weapon_node)
-			"""
-			if slots[current_slot_pos].ammo:
-				fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
-			else:
-				fps_hands.get_node("AnimationPlayer").current_animation = "Empty_Pose"
-			"""
-			#fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
-			player_node.camera.add_child(fps_hands)
-	#var weapon = "Pistol" if slots[current_slot_pos] else ""
-	weapon_manager.weapon_handle(slots[current_slot_pos])
+	if is_network_master():
+		if Input.is_action_just_pressed("game_slot_1"):
+			current_slot_pos = 0
+			if weapon_pos.get_children():
+				var to_del = weapon_pos.get_child(0)
+				weapon_pos.remove_child(to_del)
+				to_del = player_node.camera.get_child(0)
+				player_node.camera.remove_child(to_del)
+			if slots[current_slot_pos]:
+				var weapon_name = slots[current_slot_pos].weapon_name
+				var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
+				var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
+				weapon_pos.add_child(weapon_node)
+				"""
+				if slots[current_slot_pos].ammo:
+					fps_hands.get_node("AnimationPlayer").current_animation = ""
+				else:
+					fps_hands.get_node("AnimationPlayer").current_animation = ""
+				"""
+				#fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+				player_node.camera.add_child(fps_hands)
+		if Input.is_action_just_pressed("game_slot_2"):
+			current_slot_pos = 1
+			if weapon_pos.get_children():
+				var to_del = weapon_pos.get_child(0)
+				weapon_pos.remove_child(to_del)
+				to_del = player_node.camera.get_child(0)
+				player_node.camera.remove_child(to_del)
+			if slots[current_slot_pos]:
+				var weapon_name = slots[current_slot_pos].weapon_name
+				var weapon_node = load("res://scenes/weapons/%s.tscn" % weapon_name).instance()
+				var fps_hands = load("res://scenes/reloads/%s_reload.tscn" % weapon_name).instance()
+				weapon_pos.add_child(weapon_node)
+				"""
+				if slots[current_slot_pos].ammo:
+					fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+				else:
+					fps_hands.get_node("AnimationPlayer").current_animation = "Empty_Pose"
+				"""
+				#fps_hands.get_node("AnimationPlayer").current_animation = "BasePose"
+				player_node.camera.add_child(fps_hands)
+		#var weapon = "Pistol" if slots[current_slot_pos] else ""
+		weapon_manager.weapon_handle(slots[current_slot_pos])
 
 func add_weapon(weapon_pickup):
 	var weapon_instance = load("res://scenes/weapons/%s.tscn" % weapon_pickup.weapon_name).instance()
 	weapon_instance.ammo = weapon_pickup.ammo
-	weapon_pickup.get_picked_up()
+	weapon_instance.weapon_pickup_name = weapon_pickup.name
+	if Network.server:
+		weapon_pickup.rpc("delete_weapon_pickup")
+	else:
+		weapon_pickup.rpc("server_delete_weapon_pickup")
 	if not slots[current_slot_pos]:
 		slots[current_slot_pos] = weapon_instance
 		var weapon_name = weapon_instance.weapon_name
@@ -90,7 +96,7 @@ func add_weapon(weapon_pickup):
 		weapon_pos.add_child(weapon_node)
 	"""
 
-func drop_weapon():
+func drop_weapon(player_name):
 	if slots[current_slot_pos]:
 		var to_del = weapon_pos.get_child(0)
 		weapon_pos.remove_child(to_del)
@@ -98,8 +104,27 @@ func drop_weapon():
 		player_node.camera.remove_child(to_del)
 		var weapon_pickup = load("res://scenes/weapons/%s_pickup.tscn" % slots[current_slot_pos].weapon_name).instance()
 		weapon_pickup.ammo = slots[current_slot_pos].ammo
-		get_tree().get_root().add_child(weapon_pickup)
-		weapon_pickup.get_thrown()
-		slots[current_slot_pos] = null
+		#weapon_pickup.name = slots[current_slot_pos].weapon_pickup_name
+		#Global.map.add_child(weapon_pickup)
+		if Network.server:
+			rpc("instanciate_weapon_pickup", weapon_pickup.weapon_name, slots[current_slot_pos].weapon_pickup_name)
+		else:
+			rpc("server_instanciate_weapon_pickup", weapon_pickup.weapon_name, slots[current_slot_pos].weapon_pickup_name)
 		
+		#get_tree().get_root().add_child(weapon_pickup)
+		#weapon_pickup.get_thrown(player_node.name)
+		slots[current_slot_pos] = null
+
 		#print(slots)
+		
+remotesync func instanciate_weapon_pickup(weapon_name, weapon_pickup_name):
+	get_instanciated(weapon_name, weapon_pickup_name)
+	
+remote func server_instanciate_weapon_pickup(weapon_name, weapon_pickup_name):
+	rpc("instanciate_weapon_pickup", weapon_name, weapon_pickup_name)
+
+func get_instanciated(weapon_name, weapon_pickup_name):
+	puppet_weapon_name = weapon_name
+	puppet_weapon_pickup_name = weapon_pickup_name
+	Global.emit_signal("instance_object", puppet_weapon_name, puppet_weapon_pickup_name, get_parent().name)
+
